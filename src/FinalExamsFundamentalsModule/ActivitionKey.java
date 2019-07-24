@@ -20,8 +20,8 @@ public class ActivitionKey {
                 str = str.toUpperCase();
 
                 for (int j = 0; j < str.length(); j++) {
-                    if (Character.isDigit(str.charAt(j ))) {
-                        int digit = str.charAt(j ) - 48;
+                    if (Character.isDigit(str.charAt(j))) {
+                        int digit = str.charAt(j) - 48;
                         digit = 9 - digit;
                         sb.append(digit);
 
@@ -30,12 +30,36 @@ public class ActivitionKey {
                     }
 
                 }
-
+                String string = sb.toString();
+                sb = new StringBuilder();
+                if (string.length() == 25) {
+                    for (int j = 0; j < string.length(); j++) {
+                        if (j % 5 == 0 && j != 0) {
+                            sb.append("-");
+                        }
+                        sb.append(string.charAt(j));
+                    }
+                } else if (string.length() == 16) {
+                    for (int j = 0; j < string.length(); j++) {
+                        if (j % 4 == 0 && j != 0) {
+                            sb.append("-");
+                        }
+                        sb.append(string.charAt(j));
+                    }
+                }
 
 
             }
-            if (sb.toString().equals(""))
+            if (!sb.toString().equals(""))
                 code.add(sb.toString());
+
+        }
+        for (int i = 0; i < code.size(); i++) {
+            if (i != code.size() - 1) {
+                System.out.printf("%s, ", code.get(i));
+            } else {
+                System.out.printf("%s", code.get(i));
+            }
         }
     }
 }
