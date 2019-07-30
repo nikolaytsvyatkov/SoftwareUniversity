@@ -7,48 +7,34 @@ import java.util.regex.Pattern;
 public class AnimalSanctuary {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        int n = Integer.parseInt(input.nextLine());
         Pattern pattern = Pattern.compile("n:(?<name>[^;]+);t:(?<kind>[^;]+);c--(?<country>[A-Za-z ]+)");
-        StringBuilder sb = new StringBuilder();
-        int kg = 0;
+        int n = Integer.parseInt(input.nextLine());
+        int totalKg = 0;
         for (int i = 0; i < n; i++) {
             String str = input.nextLine();
             Matcher matcher = pattern.matcher(str);
-            if (matcher.find()){
+            if (matcher.find()) {
                 String name = matcher.group("name");
-                name = name(name);
-                String kind = matcher.group("kind");
-                kind = name(kind);
+                name = name.replaceAll("[^A-Za-z ]","");
+                String kind = matcher.group("kind").replaceAll("[^A-Za-z ]","");
                 String country = matcher.group("country");
-                country = name(country);
-                System.out.printf("%s is a %s from %s%n",name, kind, country);
-                kg = calculate(kg,matcher.group("name"));
-                kg = calculate(kg, matcher.group("kind"));
-
+                int kg = kg(matcher.group("name"));
+                kg += kg(matcher.group("kind"));
+                totalKg += kg;
+                System.out.printf("%s is a %s from %s%n",name,kind,country);
 
             }
         }
-        System.out.printf("Total weight of animals: %d%s%n",kg,"KG");
-    }
-    static String name (String str) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < str.length(); j++) {
-            if (Character.isAlphabetic(str.charAt(j)) || str.charAt(j) == ' ') {
-                sb.append(str.charAt(j));
-            }
+        System.out.printf("Total weight of animals: %d%s",totalKg,"KG");
 
-        }
-        str = sb.toString();
-        return str;
     }
-    static int calculate (int a, String str) {
-        for (int s = 0; s < str.length(); s++) {
-            if (Character.isDigit(str.charAt(s))){
-                a += str.charAt(s) - 48;
+    static int kg (String str) {
+        int kg = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (Character.isDigit(str.charAt(i))) {
+                kg += str.charAt(i) - 48;
             }
         }
-        return a;
+        return kg;
     }
-
-
 }
