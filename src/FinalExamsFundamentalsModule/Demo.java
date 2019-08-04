@@ -9,105 +9,58 @@ import java.util.stream.Collectors;
 public class Demo {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        String key = input.nextLine();
-
-        Map<String, Integer> points = new LinkedHashMap<>();
-        Map<String, Integer> goals = new LinkedHashMap<>();
-        AtomicInteger atomicInteger = new AtomicInteger();
-        atomicInteger.set(1);
+        String[] delimeters = input.nextLine().split(" ");
+        Map<String, String> map = new LinkedHashMap<>();
+        Map<String, Integer> coffeQuantity = new LinkedHashMap<>();
+        Map<String, Integer> coffeDrinking = new LinkedHashMap<>();
         while (true) {
-            String team = input.nextLine();
-            if (team.equals("final")) {
+            String info = input.nextLine();
+            if (info.equals("end of info")) {
                 break;
             }
-
-                String[] strings = team.split(" ");
-            int index1 = strings[0].indexOf(key);
-            int index2 = strings[0].lastIndexOf(key);
-                String team1 = strings[0].substring(index1 + key.length(), index2);
-                team1 = team(team1);
-            index1 = strings[1].indexOf(key);
-            index2 = strings[1].lastIndexOf(key);
-            String team2 = strings[1].substring(index1 + key.length(), index2);
-            team2 = team(team2);
-                String[] score = strings[2].split(":");
-                int sc1 = Integer.parseInt(score[0]);
-                int sc2 = Integer.parseInt(score[1]);
-                if (!goals.containsKey(team1)) {
-                    goals.put(team1, sc1);
+            if (info.contains(delimeters[0])) {
+                String name = info.substring(0 , info.indexOf(delimeters[0]));
+                String coffeType = info.substring(info.indexOf(delimeters[0]) + delimeters[0].length());
+                if (!map.containsKey(name)) {
+                    map.put(name, coffeType);
+                }
+            } else if (info.contains(delimeters[1])) {
+                String[] str = info.split(delimeters[1]);
+                if (!coffeQuantity.containsKey(str[0])) {
+                    coffeQuantity.put(str[0], Integer.parseInt(str[1]));
                 } else {
-                    goals.put(team1, goals.get(team1) + sc1);
+                    coffeQuantity.put(str[0], coffeQuantity.get(str[0]) + Integer.parseInt(str[1]));
                 }
-                if (!goals.containsKey(team2)) {
-                    goals.put(team2, sc2);
-                } else {
-                    goals.put(team2, goals.get(team2) + sc2);
-                }
-                if (sc1 > sc2) {
-                    if (!points.containsKey(team1)) {
-                        points.put(team1, 3);
-                    } else {
-                        points.put(team1, points.get(team1) + 3);
-                    }
-                    if (!points.containsKey(team2)) {
-                        points.put(team2, 0);
-                    } else {
-                        points.put(team2, points.get(team2) + 0);
-                    }
-                } else if (sc2 > sc1) {
-                    if (!points.containsKey(team2)) {
-                        points.put(team2, 3);
-                    } else {
-                        points.put(team2, points.get(team2) + 3);
-                    }
-                    if (!points.containsKey(team1)) {
-                        points.put(team1, 0);
-                    } else {
-                        points.put(team1, points.get(team1) + 0);
-                    }
-                } else if (sc1 == sc2) {
-                    if (!points.containsKey(team1)) {
-                        points.put(team1, 1);
-                    } else {
-                        points.put(team1, points.get(team1) + 1);
-                    }
-                    if (!points.containsKey(team2)) {
-                        points.put(team2, 1);
-                    } else {
-                        points.put(team2, points.get(team2) + 1);
-                    }
-                }
-            }
-        System.out.println("League standings:");
-        points.entrySet().stream().sorted((a, b) ->{
-            int result = Integer.compare(b.getValue(), a.getValue());
-            if (result == 0) {
-                result = a.getKey().compareTo(b.getKey());
-            }
-            return result;
-        }).forEach(e -> {
-            System.out.printf("%d. %s %d%n",atomicInteger.getAndIncrement(), e.getKey(), e.getValue());
-        });
-        System.out.println("Top 3 scored goals:");
-        goals.entrySet().stream().sorted((a, b) -> {
-            int result = Integer.compare(b.getValue(), a.getValue());
-            if (result == 0) {
-                result = a.getKey().compareTo(b.getKey());
-            }
-            return result;
-        }).limit(3).forEach(e -> {
-            System.out.printf("- %s -> %d%n",e.getKey(),e.getValue());
-        });
-        }
-
-    static  String team (String name) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < name.length(); i++) {
-            if (Character.isLetter(name.charAt(i))) {
-                stringBuilder.append(name.charAt(i));
             }
         }
-        stringBuilder.reverse();
-        return stringBuilder.toString().toUpperCase();
+        while (true) {
+            String information = input.nextLine();
+            if (information.equals("end of week")) {
+                break;
+            }
+            String[] strings = information.split(" ");
+            String name = strings[0];
+            int qunatity = Integer.parseInt(strings[1]);
+            if (!coffeDrinking.containsKey(name)) {
+                coffeDrinking.put(name, qunatity);
+            } else {
+                coffeDrinking.put(name, coffeDrinking.get(name) + qunatity);
+            }
+        }
+        for (Map.Entry<String, Integer> entry : coffeDrinking.entrySet()) {
+            String name = entry.getKey();
+            if (map.containsKey(name)) {
+                String coffeType = map.get(name);
+                if (coffeQuantity.containsKey(coffeType)) {
+                    coffeQuantity.put(coffeType, coffeQuantity.get(coffeType) - entry.getValue());
+                }
+                if (coffeQuantity.get(coffeType) <= 0) {
+                    System.out.println("Out of " + coffeType);
+                }
+            }
+        }
+
+
     }
+
 }
